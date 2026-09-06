@@ -53,6 +53,8 @@ sudo ./server/uninstall.sh --yes
 
 会：停用 `wg0` 与开机自启 → 备份 `/etc/wireguard` 到 `/root/wireguard-backup-<时间戳>.tar.gz` 后删除 → 删除 WG 端口的 ufw 放行（保留 OpenSSH）→ 把本地 `secrets/`、`peers.map` 改名备份。`net.ipv4.ip_forward` 保持原样，如需关闭请手动处理。
 
+> 从控制端（Mac）远程一键清理：`./scripts/agent-uninstall.sh`（全量）或 `./scripts/agent-uninstall.sh alice iphone`（只移除指定设备），它会 SSH 到 VPS 执行上面的脚本，并同步清理控制端本地的 `secrets/`、`peers.map`。
+
 ## 密钥轮换
 
 给某设备换钥匙（保持同一隧道 IP）：

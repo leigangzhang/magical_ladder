@@ -66,6 +66,22 @@ ssh-copy-id root@<VPS_IP>     # 之后 ssh root@vpshost 不再需要密码
    并给出 macOS / iOS / Android 的导入方法。
 ```
 
+**清理：把下面这段指令复制给 AI Agent**，它会自动完成全量卸载或移除指定设备：
+
+```text
+帮我用仓库 git@github.com:leigangzhang/magical_ladder.git 清理 WireGuard 环境：
+
+1. 下载仓库到控制端（已存在则跳过）：
+   git clone git@github.com:leigangzhang/magical_ladder.git ~/magical_ladder
+   cd ~/magical_ladder
+2. 从控制端 /etc/hosts 读取 vpshost 的 IP（记为 VPS_IP），生成 config.env：
+   ENDPOINT=<VPS_IP>，SSH_HOST=vpshost，其余保持默认。
+3. 全量卸载：运行 ./scripts/agent-uninstall.sh
+   （它在 VPS 上执行 server/uninstall.sh --yes，并备份清理本地 secrets/ 与 peers.map）
+   如需只移除某几台设备：./scripts/agent-uninstall.sh macbook iphone
+4. 完成后汇报结果。
+```
+
 > 也可以跳过 Agent，直接按下方「快速开始」手动执行。详细流程见 [docs/agent-deploy.md](docs/agent-deploy.md)。
 
 ---
@@ -181,6 +197,10 @@ sudo ./monitoring/install-netdata.sh
 
 # 从控制端（Mac）一键编排：同步仓库 + 装服务端 + 生成设备配置 + 拉回 secrets
 ./scripts/agent-deploy.sh macbook=10.8.0.2 iphone
+
+# 从控制端一键清理：全量卸载，或只移除指定设备
+./scripts/agent-uninstall.sh                 # 全量卸载
+./scripts/agent-uninstall.sh macbook iphone  # 移除指定设备
 ```
 
 ## 安全与秘密管理
