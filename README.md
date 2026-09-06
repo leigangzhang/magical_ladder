@@ -47,39 +47,57 @@ ssh-copy-id root@<VPS_IP>     # 之后 ssh root@vpshost 不再需要密码
 **第二步：把下面这段指令复制给 Claude Code / Codex / DeepSeek Harness 等 AI Agent**，它会自动下载、推送到 VPS 并完成安装与配置（设备清单按需替换）：
 
 ```text
-帮我用仓库 git@github.com:leigangzhang/magical_ladder.git 部署 WireGuard 多端 VPN：
+帮我用仓库 git@github.com:leigangzhang/magical_ladder.git 部署 WireGuard 多端 VPN。
+执行期间，凡遇到「要输入密码、要确认 SSH 指纹、要在设备上手动操作、或破坏性动作」，
+都必须停下等我操作/确认，不要自动跳过或重试。
 
 1. 下载仓库到控制端：
    git clone git@github.com:leigangzhang/magical_ladder.git ~/magical_ladder
    cd ~/magical_ladder
-2. 从控制端 /etc/hosts 读取 vpshost 对应的 IP（记为 VPS_IP）。
-3. 生成 config.env（基于 config.env.example）：
-   ENDPOINT=<VPS_IP>，SSH_HOST=vpshost，其余保持默认。
-4. 确保本机能免密 ssh root@vpshost（如需，帮我配置 /etc/hosts 和 ssh-copy-id）。
-5. 运行 ./scripts/agent-deploy.sh（它会先把仓库推送到 VPS，再安装服务端并生成设备配置），
-   为以下设备各生成独立配置（每台唯一私钥/IP）：
+
+2. 准备 SSH 免密（逐步进行，要密码就停）：
+   a. 若 /etc/hosts 没有 vpshost，给出下面命令并停下等我执行（需要 sudo 密码）：
+      echo "<VPS_IP> vpshost" | sudo tee -a /etc/hosts
+   b. 生成/复用 SSH 密钥（不设 passphrase 以保持免密）：
+      ssh-keygen -t ed25519 -C "你@邮箱"
+   c. ssh-copy-id root@vpshost —— 首次要输入 VPS root 密码，停在这里等我输入。
+   d. 第一次 ssh 若提示确认主机指纹（yes/no），停在这里等我确认，不要自动 yes。
+
+3. 生成 config.env：ENDPOINT 取 /etc/hosts 里 vpshost 的 IP；SSH_HOST=vpshost。
+   隧道网段默认 10.8.0.0/24、DNS 8.8.8.8、仅 IPv4；执行前把这三个默认值告诉我，等我确认无冲突。
+
+4. 运行 ./scripts/agent-deploy.sh，为以下设备各生成独立配置（每台唯一私钥/IP）：
    macbook=10.8.0.2
    mac-mini=10.8.0.3
    iphone=10.8.0.4
    ipad=10.8.0.5
-6. 完成后，告诉我每台设备的配置文件路径（secrets/<设备>.conf）与二维码位置，
-   并给出 macOS / iOS / Android 的导入方法。
+   注意：脚本会在 VPS 上装服务端，可能短暂影响 SSH 连接；若 SSH 中断，停在这里等我重连后说“继续”。
+
+5. 完成后告诉我每台设备的配置文件路径（secrets/<设备>.conf）与二维码位置，并给出导入方法。
+   macOS 导入 .conf 并打开开关、iPhone/iPad 扫码/导入都需要我在设备上手动操作——
+   你只负责给文件和步骤，并用 ./scripts/show-peers.sh 检查每台是否连上后向我汇报。
 ```
 
 **清理：把下面这段指令复制给 AI Agent**，它会自动完成全量卸载或移除指定设备：
 
 ```text
-帮我用仓库 git@github.com:leigangzhang/magical_ladder.git 清理 WireGuard 环境：
+帮我用仓库 git@github.com:leigangzhang/magical_ladder.git 清理 WireGuard 环境。
+全量卸载会停掉 VPN 并删除服务端配置，属破坏性动作，必须等我明确确认后再执行。
 
 1. 下载仓库到控制端（已存在则跳过）：
    git clone git@github.com:leigangzhang/magical_ladder.git ~/magical_ladder
    cd ~/magical_ladder
-2. 从控制端 /etc/hosts 读取 vpshost 的 IP（记为 VPS_IP），生成 config.env：
-   ENDPOINT=<VPS_IP>，SSH_HOST=vpshost，其余保持默认。
-3. 全量卸载：运行 ./scripts/agent-uninstall.sh
-   （它在 VPS 上执行 server/uninstall.sh --yes，并备份清理本地 secrets/ 与 peers.map）
-   如需只移除某几台设备：./scripts/agent-uninstall.sh macbook iphone
-4. 完成后汇报结果。
+
+2. 准备 SSH 免密（同部署流程：/etc/hosts、ssh-copy-id、指纹确认，遇到要密码/确认就停下等我）。
+
+3. 生成 config.env：ENDPOINT 取 /etc/hosts 里 vpshost 的 IP；SSH_HOST=vpshost。
+
+4. 执行前先问我确认是「全量卸载」还是「只移除某几台设备」，确认后再运行：
+   - 全量：./scripts/agent-uninstall.sh
+   - 只移除：./scripts/agent-uninstall.sh macbook iphone
+   运行后若 SSH 中断，停下等我重连。
+
+5. 完成后汇报：VPS 侧已卸载/移除的内容，以及本地 secrets、peers.map 的备份位置。
 ```
 
 > 也可以跳过 Agent，直接按下方「快速开始」手动执行。详细流程见 [docs/agent-deploy.md](docs/agent-deploy.md)。

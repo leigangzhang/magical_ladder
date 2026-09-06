@@ -92,3 +92,21 @@ scp root@vps:/opt/magical_ladder/secrets/ ./secrets/
 - **`config.env` 未配置**：先 `cp config.env.example config.env` 并填 `ENDPOINT`；
 - **add-client 报「设备名已存在」**：`peers.map` 里已有同名，换名或用 `clients/remove-client.sh` 先移除；
 - **设备连不上**：确认服务端 `./scripts/show-peers.sh` 能看到该设备出现 endpoint 与握手。
+
+## 七、需要人工接管的地方（Agent 应停下等待）
+
+| 阶段 | 需人工介入的点 | Agent 应如何等待 |
+|---|---|---|
+| 控制端准备 | 写 `/etc/hosts` 需 sudo 密码 | 停下，给出命令等人执行 |
+| 控制端准备 | `ssh-keygen` 是否复用密钥/设 passphrase | 停下让人确认 |
+| 控制端准备 | `ssh-copy-id` 首次输 VPS root 密码 | 停下等人输入 |
+| 首次 SSH | 主机指纹 `yes/no` 确认 | 停下等人确认，不要自动 yes |
+| 首次 SSH | 未免密时 `ssh root@vps` 要密码 | 停下等人输入 |
+| 参数决策 | 隧道网段 / DNS / 是否 IPv6 | 列默认值等人确认无冲突 |
+| 服务端安装 | `ufw enable` / `wg-quick up` 可能中断 SSH | 每步后探测连通性，断则等人重连 |
+| 分发接入 | macOS GUI 导入 + 打开开关 | GUI 操作，等人完成 |
+| 分发接入 | iOS/Android 扫码/导入 | 必须人在设备上操作 |
+| 清理 | 全量卸载（破坏性） | 等人在指令里明确授权后再执行 |
+| 通用 | 私钥提交/任何不可逆删除 | 停下求确认 |
+
+核心原则：**要密码、要确认指纹、要在别的设备上手动操作、不可逆删除 —— 这四类一律停下等待人工接管**，不要自动跳过或失败重试。
