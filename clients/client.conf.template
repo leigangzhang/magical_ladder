@@ -1,0 +1,10 @@
+[Interface]
+PrivateKey = {{CLIENT_PRIVATE_KEY}}
+Address = {{CLIENT_V4}}/24
+{{CLIENT_V6_LINE}}DNS = {{CLIENT_DNS}}
+
+[Peer]
+PublicKey = {{SERVER_PUBLIC_KEY}}
+AllowedIPs = {{CLIENT_ALLOWED_IPS}}
+Endpoint = {{ENDPOINT}}:{{WG_PORT}}
+PersistentKeepalive = {{KEEPALIVE}}

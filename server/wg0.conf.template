@@ -1,0 +1,18 @@
+[Interface]
+Address = {{SERVER_V4}}/24
+{{SERVER_V6_LINE}}
+SaveConfig = false
+ListenPort = {{WG_PORT}}
+PrivateKey = {{SERVER_PRIVATE_KEY}}
+PostUp = ufw route allow in on wg0 out on {{PUBLIC_IFACE}}
+PostUp = iptables -t nat -I POSTROUTING -o {{PUBLIC_IFACE}} -j MASQUERADE
+PostUp = ip6tables -t nat -I POSTROUTING -o {{PUBLIC_IFACE}} -j MASQUERADE
+PreDown = ufw route delete allow in on wg0 out on {{PUBLIC_IFACE}}
+PreDown = iptables -t nat -D POSTROUTING -o {{PUBLIC_IFACE}} -j MASQUERADE
+PreDown = ip6tables -t nat -D POSTROUTING -o {{PUBLIC_IFACE}} -j MASQUERADE
+
+# 下面由 clients/add-client.sh 自动追加 [Peer] 段，例如：
+# [Peer]
+# # alice 10.8.0.2
+# PublicKey = <peer 公钥>
+# AllowedIPs = 10.8.0.2/32

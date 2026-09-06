@@ -1,0 +1,14 @@
+# 本地参数与秘密文件（绝不提交）
+config.env
+peers.map
+.age.key
+secrets.tar.age
+secrets/
+backup/
+
+# 生成的客户端配置与二维码（含私钥）
+*.conf
+*.png
+
+# 系统杂项
+.DS_Store
