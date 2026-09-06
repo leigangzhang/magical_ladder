@@ -209,7 +209,7 @@ sudo ./monitoring/install-netdata.sh
 - 公钥可公开，但本项目也**不硬编码**任何公钥，全部由脚本运行时生成并写入 `peers.map`。
 
 ## 文档
-- [Agent 驱动安装与配置流程](docs/agent-deploy.md)
+- [Agent安装配置](docs/agent-deploy.md)
 - [架构说明](docs/architecture.md)
 - [运维手册](docs/operations.md)
 - [故障排查](docs/troubleshooting.md)
