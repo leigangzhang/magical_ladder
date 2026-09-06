@@ -41,10 +41,21 @@ magical_ladder/
 - VPS 上能 `sudo` 的 root 或非 root 用户；
 - 客户端设备：macOS / iOS / Android 等，装有 WireGuard 客户端。
 
+> **依赖说明**：项目**运行本身不需要 git**。`install.sh` 会自动安装运行所需的 `wireguard`、`qrencode` 等；`age`（可选，用于 secrets 加密）与 netdata（可选监控）按需安装。git 只是下面“下载项目到 VPS”的其中一种方式，可替换为下载 zip/tar 或 scp。
+
 ### 1. 拉取项目到 VPS
 
 ```bash
+# 方式 A：git（推荐，便于日后 git pull 更新）
+apt install -y git
 git clone <你的仓库地址> /opt/magical_ladder
+
+# 方式 B：无 git，直接下载 tarball
+curl -L <你的仓库地址>/archive/refs/heads/main.tar.gz | tar xz -C /opt
+
+# 方式 C：无 git，从本地 scp 上去
+scp -r ./magical_ladder root@<vps>:/opt/
+
 cd /opt/magical_ladder
 cp config.env.example config.env
 vim config.env            # 至少填写 ENDPOINT（VPS 公网 IP 或域名）
