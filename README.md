@@ -9,8 +9,6 @@
 
 ![magical_ladder 架构拓扑](docs/diagrams/architecture.png)
 
-> 图中各关键组件均附一句话概念说明。可编辑源文件：[docs/diagrams/architecture.excalidraw](docs/diagrams/architecture.excalidraw)（用 Excalidraw 打开即可修改，改后重新导出 PNG）。
-
 ## 功能特性
 
 - **一键搭建**：一条命令装好服务端，软件安装、密钥生成、网络转发、防火墙与开机自启全部自动完成，重复执行也不会弄乱现有配置
