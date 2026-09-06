@@ -6,9 +6,9 @@ secrets.tar.age
 secrets/
 backup/
 
-# 生成的客户端配置与二维码（含私钥）
+# 生成的客户端配置与二维码（含私钥；secrets/ 已整体忽略，此处仅保留 .conf 以防散落）
 *.conf
-*.png
+secrets/*.png
 
 # 系统杂项
 .DS_Store
