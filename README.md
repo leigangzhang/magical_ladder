@@ -45,17 +45,34 @@ magical_ladder/
 
 ### 1. 拉取项目到 VPS
 
+任选下面一种方式，把项目放到 VPS 的 `/opt/magical_ladder`：
+
+#### 方式 A：git clone（推荐）
+
+便于日后 `git pull` 一键更新：
+
 ```bash
-# 方式 A：git（推荐，便于日后 git pull 更新）
 apt install -y git
 git clone <你的仓库地址> /opt/magical_ladder
+```
 
-# 方式 B：无 git，直接下载 tarball
-curl -L <你的仓库地址>/archive/refs/heads/main.tar.gz | tar xz -C /opt
+#### 方式 B：直接下载 tarball（无需 git）
 
-# 方式 C：无 git，从本地 scp 上去
+```bash
+mkdir -p /opt/magical_ladder
+curl -L <你的仓库地址>/archive/refs/heads/main.tar.gz \
+  | tar xz -C /opt/magical_ladder --strip-components=1
+```
+
+#### 方式 C：从本地 scp 上传（无需 git）
+
+```bash
 scp -r ./magical_ladder root@<vps>:/opt/
+```
 
+无论用哪种方式，接着进入目录并填写配置：
+
+```bash
 cd /opt/magical_ladder
 cp config.env.example config.env
 vim config.env            # 至少填写 ENDPOINT（VPS 公网 IP 或域名）
