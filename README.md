@@ -7,6 +7,12 @@
 - 私钥统一落在 `secrets/`（已 gitignore），并提供 age 加解密脚本
 - 内置分设备实时速率 `wgwatch` 与状态查看 `show-peers.sh`
 
+## 架构拓扑
+
+![magical_ladder 架构拓扑](docs/diagrams/architecture.png)
+
+> 图中各关键组件均附一句话概念说明。可编辑源文件：[docs/diagrams/architecture.excalidraw](docs/diagrams/architecture.excalidraw)（用 Excalidraw 打开即可修改，改后重新导出 PNG）。
+
 ## 特性
 
 - **服务端**：Ubuntu 一键安装，自动处理密钥、`wg0.conf`、IP 转发、防火墙（ufw + MASQUERADE）、开机自启，幂等可重跑
@@ -78,9 +84,7 @@ ssh-copy-id root@<VPS_IP>     # 之后 ssh root@vpshost 不再需要密码
    你只负责给文件和步骤，并用 ./scripts/show-peers.sh 检查每台是否连上后向我汇报。
 ```
 
-**清理：** 一键卸载/移除设备的完整流程与 AI Agent 指令见 [docs/cleanup.md](docs/cleanup.md)。
-
-> 也可以跳过 Agent，直接按下方「快速开始」手动执行。详细流程见 [docs/agent-deploy.md](docs/agent-deploy.md)。
+> 也可以跳过 Agent，直接按下方「快速开始」手动执行，详细流程见 [docs/agent-deploy.md](docs/agent-deploy.md)。
 
 ---
 
@@ -209,12 +213,11 @@ sudo ./monitoring/install-netdata.sh
 - 公钥可公开，但本项目也**不硬编码**任何公钥，全部由脚本运行时生成并写入 `peers.map`。
 
 ## 文档
-
-- [架构说明](docs/architecture.md)
 - [Agent 驱动安装与配置流程](docs/agent-deploy.md)
-- [清理与卸载（Agent 一键 + 手动脚本）](docs/cleanup.md)
+- [架构说明](docs/architecture.md)
 - [运维手册](docs/operations.md)
 - [故障排查](docs/troubleshooting.md)
+- [清理与卸载](docs/cleanup.md)
 - [参考资料](docs/references.md)
 
 ## 许可证
