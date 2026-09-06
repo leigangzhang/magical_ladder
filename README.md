@@ -141,6 +141,9 @@ sudo ./scripts/wgwatch [间隔秒]
 
 # 监控（可选）
 sudo ./monitoring/install-netdata.sh
+
+# 从控制端（Mac）一键编排：同步仓库 + 装服务端 + 生成设备配置 + 拉回 secrets
+./scripts/agent-deploy.sh macbook=10.8.0.2 iphone
 ```
 
 ## 安全与秘密管理
@@ -153,6 +156,7 @@ sudo ./monitoring/install-netdata.sh
 ## 文档
 
 - [架构说明](docs/architecture.md)
+- [Agent 驱动安装与配置流程](docs/agent-deploy.md)
 - [运维手册](docs/operations.md)
 - [故障排查](docs/troubleshooting.md)
 - [参考资料](docs/references.md)
