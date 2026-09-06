@@ -53,10 +53,12 @@ magical_ladder/
 
 ```bash
 apt install -y git
-git clone https://github.com/leigangzhang/magical_ladder /opt/magical_ladder
+git clone git@github.com:leigangzhang/magical_ladder.git /opt/magical_ladder
 ```
 
 #### 方式 B：直接下载 tarball（无需 git）
+
+> tarball 下载只能走 HTTPS（curl 不支持 SSH），因此这里用 https 地址：
 
 ```bash
 mkdir -p /opt/magical_ladder
