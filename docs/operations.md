@@ -27,13 +27,13 @@ wg show                            # WireGuard 原生信息
 
 ## 删除 / 停用设备
 
-用 `uninstall.sh`（推荐，自动清理 wg0.conf + peers.map + secrets）：
+用 `clients/remove-client.sh`（推荐，自动清理 wg0.conf + peers.map + secrets）：
 
 ```bash
 # 按名字 / 隧道 IP / 公钥（可多个，--dry-run 预览）
-sudo ./server/uninstall.sh alice bob
-sudo ./server/uninstall.sh 10.8.0.3 --dry-run
-sudo ./server/uninstall.sh vfoZUVseHgoslLrkyNXTRF5rwhvePYTm2you9B2nklw=
+sudo ./clients/remove-client.sh alice bob
+sudo ./clients/remove-client.sh 10.8.0.3 --dry-run
+sudo ./clients/remove-client.sh vfoZUVseHgoslLrkyNXTRF5rwhvePYTm2you9B2nklw=
 ```
 
 会同步：从 `/etc/wireguard/wg0.conf` 移除 `[Peer]` 段 → `wg syncconf` 热应用（其他在线设备不受影响）→ 清理 `peers.map` 与 `secrets/<名字>.conf/.png`。

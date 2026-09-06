@@ -12,7 +12,7 @@
 ## 特性
 
 - **服务端**：Ubuntu 一键安装，自动处理密钥、`wg0.conf`、IP 转发、防火墙（ufw + MASQUERADE）、开机自启，幂等可重跑
-- **客户端**：`add-client.sh` 生成独立密钥与配置 + 二维码，`wg syncconf` 热生效不打断在线会话；`uninstall.sh` 支持移除单个/多个设备或全量卸载
+- **客户端**：`add-client.sh` 生成独立密钥与配置 + 二维码，`wg syncconf` 热生效不打断在线会话；`remove-client.sh` 移除单个/多个设备
 - **多端导入**：macOS（GUI / wg-quick）、iOS / Android（扫码 / 文件 / 手动）
 - **安全**：私钥不进仓库；`secrets/`、`backup/`、`config.env`、`peers.map` 全部 gitignore；`secrets-lock/unlock` 用 age 统一加密
 - **监控**：`wgwatch`（实时速率）、`show-peers.sh`（状态/累计）、可选 netdata（分设备历史曲线 + 云端/App）
@@ -22,8 +22,9 @@
 ```
 magical_ladder/
 ├── server/install.sh        一键初始化服务端
-├── server/uninstall.sh      移除设备 / 全量卸载
+├── server/uninstall.sh      全量卸载服务端
 ├── clients/add-client.sh    新增设备（.conf + 二维码 + 追加 peer）
+├── clients/remove-client.sh 移除一个或多个设备
 ├── scripts/                 wgwatch / show-peers / backup / restore / secrets 加解密
 ├── monitoring/              可选 netdata 安装
 ├── docs/                    架构 / 运维 / 排障 / 参考资料
@@ -93,7 +94,7 @@ sudo ./server/install.sh
 sudo ./clients/add-client.sh <名字> [IP] [--dry-run|--print|--ipv6 <addr>|--import-private <key>]
 
 # 移除设备（名字 / 隧道IP / 公钥，可多个；--dry-run 预览）
-sudo ./server/uninstall.sh <名字或IP或公钥> [更多...]
+sudo ./clients/remove-client.sh <名字或IP或公钥> [更多...]
 
 # 全量卸载服务端（需 --yes）
 sudo ./server/uninstall.sh --yes
