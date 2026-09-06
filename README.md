@@ -1,5 +1,3 @@
-# magical_ladder
-
 一套可公开复用的 magical_ladder 部署模板：在一台 VPS 上快速搭起“1 台服务端 + 多台设备”的全隧道 VPN，每台设备**唯一私钥、唯一隧道 IP**，并附带分设备流量监控与备份/加密工具。
 
 - 全部参数化，无任何硬编码的 IP / 密钥 / 设备名
@@ -13,13 +11,13 @@
 
 > 图中各关键组件均附一句话概念说明。可编辑源文件：[docs/diagrams/architecture.excalidraw](docs/diagrams/architecture.excalidraw)（用 Excalidraw 打开即可修改，改后重新导出 PNG）。
 
-## 特性
+## 功能特性
 
-- **服务端**：Ubuntu 一键安装，自动处理密钥、`wg0.conf`、IP 转发、防火墙（ufw + MASQUERADE）、开机自启，幂等可重跑
-- **客户端**：`add-client.sh` 生成独立密钥与配置 + 二维码，`wg syncconf` 热生效不打断在线会话；`remove-client.sh` 移除单个/多个设备
-- **多端导入**：macOS（GUI / wg-quick）、iOS / Android（扫码 / 文件 / 手动）
-- **安全**：私钥不进仓库；`secrets/`、`backup/`、`config.env`、`peers.map` 全部 gitignore；`secrets-lock/unlock` 用 age 统一加密
-- **监控**：`wgwatch`（实时速率）、`show-peers.sh`（状态/累计）、可选 netdata（分设备历史曲线 + 云端/App）
+- **一键搭建**：一条命令装好服务端，软件安装、密钥生成、网络转发、防火墙与开机自启全部自动完成，重复执行也不会弄乱现有配置
+- **每台设备独立**：每台设备各一条命令，自动生成专属配置和二维码；加入或移除设备都互不打扰
+- **多端即连即用**：Mac、iPhone、iPad、安卓手机都能扫码或导入文件，秒连
+- **密钥安全**：每台设备的密钥只留在你自己的服务器和设备里，仓库不含任何密钥，并支持一键加密备份、随时恢复
+- **设备可观测**：实时看到每台设备的网速与在线状态，还可选装网页仪表盘或手机 App 查看历史流量
 
 ## 目录结构
 
@@ -37,7 +35,7 @@ magical_ladder/
 └── peers.map.example        设备映射示例（运行时生成 peers.map）
 ```
 
-## 交给 AI Agent 自动部署（推荐）
+## Agent自动部署（推荐）
 
 **第一步：把 VPS 的 IP/hosts 与 SSH 免密配到控制端（一次即可）**
 
