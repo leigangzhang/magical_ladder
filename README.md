@@ -1,6 +1,6 @@
-# WireGuard 多端 VPN 一键搭建
+# magical_ladder
 
-一套可公开复用的 WireGuard VPN 部署模板：在一台 VPS 上快速搭起“1 台服务端 + 多台设备”的全隧道 VPN，每台设备**唯一私钥、唯一隧道 IP**，并附带分设备流量监控与备份/加密工具。
+一套可公开复用的 magical_ladder 部署模板：在一台 VPS 上快速搭起“1 台服务端 + 多台设备”的全隧道 VPN，每台设备**唯一私钥、唯一隧道 IP**，并附带分设备流量监控与备份/加密工具。
 
 - 全部参数化，无任何硬编码的 IP / 密钥 / 设备名
 - 一条命令初始化服务端，一条命令新增设备（自动生成 `.conf` + 二维码）
@@ -20,7 +20,7 @@
 ## 目录结构
 
 ```
-wireguard-vpn/
+magical_ladder/
 ├── server/install.sh        一键初始化服务端
 ├── clients/add-client.sh    新增设备（.conf + 二维码 + 追加 peer）
 ├── scripts/                 wgwatch / show-peers / backup / restore / secrets 加解密
@@ -42,8 +42,8 @@ wireguard-vpn/
 ### 1. 拉取项目到 VPS
 
 ```bash
-git clone <你的仓库地址> /opt/wireguard-vpn
-cd /opt/wireguard-vpn
+git clone <你的仓库地址> /opt/magical_ladder
+cd /opt/magical_ladder
 cp config.env.example config.env
 vim config.env            # 至少填写 ENDPOINT（VPS 公网 IP 或域名）
 ```
