@@ -53,14 +53,14 @@ magical_ladder/
 
 ```bash
 apt install -y git
-git clone <你的仓库地址> /opt/magical_ladder
+git clone https://github.com/leigangzhang/magical_ladder /opt/magical_ladder
 ```
 
 #### 方式 B：直接下载 tarball（无需 git）
 
 ```bash
 mkdir -p /opt/magical_ladder
-curl -L <你的仓库地址>/archive/refs/heads/main.tar.gz \
+curl -L https://github.com/leigangzhang/magical_ladder/archive/refs/heads/main.tar.gz \
   | tar xz -C /opt/magical_ladder --strip-components=1
 ```
 
