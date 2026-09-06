@@ -5,10 +5,10 @@
 #   make add NAME=bob          # 省略 IP 时自动分配下一个空闲地址
 #   make backup
 #   make restore DIR=backup/20260101-120000
-#   make rm-peers PEERS="alice bob"   # 移除一个或多个设备
-#   make uninstall                    # 全量卸载服务端
+#   make rm-client PEERS="alice bob"   # 移除一个或多个设备
+#   make uninstall                     # 全量卸载服务端
 
-.PHONY: install add backup restore rm-peers uninstall
+.PHONY: install add backup restore rm-client uninstall
 
 install:
 	./server/install.sh
@@ -16,8 +16,8 @@ install:
 add:
 	./clients/add-client.sh $(NAME) $(IP)
 
-rm-peers:
-	./server/uninstall.sh $(PEERS)
+rm-client:
+	./clients/remove-client.sh $(PEERS)
 
 uninstall:
 	./server/uninstall.sh --yes
