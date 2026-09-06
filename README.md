@@ -7,6 +7,38 @@
 - 私钥统一落在 `secrets/`（已 gitignore），并提供 age 加解密脚本
 - 内置分设备实时速率 `wgwatch` 与状态查看 `show-peers.sh`
 
+## 🤖 交给 AI Agent 自动部署（推荐）
+
+**第一步：把 VPS 的 IP/hosts 与 SSH 免密配到控制端（一次即可）**
+
+```bash
+# 1) 写 /etc/hosts，方便用别名 vpshost
+echo "<VPS_IP> vpshost" | sudo tee -a /etc/hosts
+
+# 2) 生成密钥（已有可跳过）并上传公钥，实现免密登录
+ssh-keygen -t ed25519 -C "你@邮箱"
+ssh-copy-id root@<VPS_IP>     # 之后 ssh root@vpshost 不再需要密码
+```
+
+**第二步：把下面这段指令复制给 Claude Code / Codex / DeepSeek Harness 等 AI Agent**，它会自动完成安装与配置（替换 `<VPS_IP>` 和设备清单）：
+
+```text
+帮我用本仓库（magical_ladder）部署 WireGuard 多端 VPN：
+
+1. 生成 config.env：基于 config.env.example，设置
+   ENDPOINT=<VPS_IP>，SSH_HOST=vpshost，其余保持默认。
+2. 确保本机能免密 ssh root@vpshost（如需，帮我配置 /etc/hosts 和 ssh-copy-id）。
+3. 运行 ./scripts/agent-deploy.sh，为以下设备各生成独立配置（每台唯一私钥/IP）：
+   macbook=10.8.0.2
+   mac-mini=10.8.0.3
+   iphone=10.8.0.4
+   ipad=10.8.0.5
+4. 完成后，告诉我每台设备的配置文件路径（secrets/<设备>.conf）与二维码位置，
+   并给出 macOS / iOS / Android 的导入方法。
+```
+
+> 也可以跳过 Agent，直接按下方「快速开始」手动执行。详细流程见 [docs/agent-deploy.md](docs/agent-deploy.md)。
+
 ---
 
 ## 特性
