@@ -2,14 +2,39 @@
 
 ## 拓扑：中心-辐条（Hub-and-Spoke）
 
+```mermaid
+flowchart LR
+    subgraph CP["控制面（可选，仅部署/清理时参与）"]
+        Agent["控制端 Mac · Agent<br/>SSH 编排部署/清理"]
+    end
+
+    subgraph SP["客户端（Spokes）"]
+        MB["macbook<br/>10.8.0.2/24"]
+        MM["mac-mini<br/>10.8.0.3/24"]
+        PH["iphone<br/>10.8.0.4/24"]
+        PD["ipad<br/>10.8.0.5/24"]
+    end
+
+    subgraph HUB["VPS（Hub）"]
+        ETH["eth0 · 公网入口<br/>监听 51820/UDP"]
+        WG["wg0 · 隧道网关<br/>10.8.0.1/24"]
+        NAT[["MASQUERADE + ip_forward<br/>出站流量伪装成 VPS 公网 IP"]]
+    end
+
+    INET(("互联网"))
+
+    MB --> ETH
+    MM --> ETH
+    PH --> ETH
+    PD --> ETH
+    ETH --> WG
+    WG --> NAT
+    NAT --> INET
+
+    Agent -. "SSH 控制面（不走数据面）" .-> HUB
 ```
-                 ┌─────────────────────────┐
-  设备A ──┐      │        VPS (Hub)        │
-          ├──────▶  eth0: 公网 IP            │
-  设备B ──┘      │  wg0 : SERVER_V4 (网关)   │──► 互联网
-          │      │  MASQUERADE (SNAT)        │
-  设备C ──┘      └─────────────────────────┘
-```
+
+> 控制端（Agent）属**控制面**，只在部署/清理时通过 SSH 参与编排，不承载任何业务数据流；数据面（设备 ↔ VPS ↔ 互联网）走加密 UDP 隧道。
 
 - **中心节点（Hub）**：VPS，公网可达，监听一个 UDP 端口（默认 51820）。
 - **辐条（Spoke）**：各客户端设备，主动向 Hub 建立隧道；全部流量经 Hub 转发出去（网关模式）。
