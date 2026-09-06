@@ -1,0 +1,6 @@
+# 设备名 <TAB> 隧道IP <TAB> 公钥
+# 此文件由 clients/add-client.sh 自动维护（写入项目根目录 peers.map）。
+# 这里仅作格式示例，不要提交真实公钥到公开仓库。
+#
+# alice	10.8.0.2	<base64 公钥>
+# bob	10.8.0.3	<base64 公钥>

@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+# ============================================================================
+# wgwatch - 每台设备实时速率监控（零依赖，采样 wg show 计数算差值）
+# 用法：wgwatch [间隔秒]    默认 2 秒；Ctrl-C 退出
+# 设备名从 peers.map（项目根目录或 /etc/wireguard/peers.map）读取。
+# ============================================================================
+
+IFACE="${WG_IFACE:-wg0}"
+INTERVAL="${1:-2}"
+
+# 定位 peers.map
+MAP=""
+for f in "$(dirname "$0")/../peers.map" "/etc/wireguard/peers.map" "peers.map"; do
+  [ -f "$f" ] && MAP="$f" && break
+done
+
+declare -A NAME
+ORDER=()
+if [ -n "$MAP" ]; then
+  while IFS=$'\t' read -r name ip pk; do
+    case "$name" in ''|'#'*) continue ;; esac
+    NAME["$pk"]="$name"
+    ORDER+=("$pk")
+  done < "$MAP"
+fi
+
+fmt() { awk -v b="$1" 'BEGIN{ if(b>=1048576) printf "%.2f MB/s", b/1048576; else if(b>=1024) printf "%.1f KB/s", b/1024; else printf "%d B/s", b }'; }
+
+snap() { # $1 = 数组前缀（PREV/CURR）
+  local -n __rx="$1_RX" __tx="$1_TX"
+  local p r t
+  while read -r p r t; do
+    [ -n "$p" ] || continue
+    __rx[$p]=$r; __tx[$p]=$t
+  done < <(wg show "$IFACE" transfer 2>/dev/null)
+}
+
+declare -Ag PREV_RX PREV_TX CURR_RX CURR_TX
+snap PREV
+T0=$(date +%s)
+
+while true; do
+  sleep "$INTERVAL"
+  declare -Ag CURR_RX CURR_TX
+  snap CURR
+  NOW=$(date +%s); DT=$((NOW-T0)); T0=$NOW
+  [ "$DT" -lt 1 ] && DT=1
+
+  printf '\n%s  (每 %ss)   ↓下载=设备接收   ↑上传=设备发送\n' "$(date '+%F %T')" "$DT"
+  printf '%-12s %14s %14s  %s\n' DEVICE DOWN UP STATE
+
+  # 合并 peer 列表（peers.map 中的 + 新增未记录的）
+  PKS=("${ORDER[@]}")
+  for pk in "${!CURR_RX[@]}"; do
+    hit=0
+    for o in "${ORDER[@]}"; do [ "$o" = "$pk" ] && hit=1 && break; done
+    [ "$hit" -eq 0 ] && PKS+=("$pk")
+  done
+
+  total_d=0; total_u=0
+  for pk in "${PKS[@]}"; do
+    label="${NAME[$pk]:-${pk:0:8}}"
+    if [ -n "${CURR_RX[$pk]:-}" ]; then
+      d=$(( ( ${CURR_TX[$pk]} - ${PREV_TX[$pk]:-${CURR_TX[$pk]}} ) / DT ))
+      u=$(( ( ${CURR_RX[$pk]} - ${PREV_RX[$pk]:-${CURR_RX[$pk]}} ) / DT ))
+      [ "$d" -lt 0 ] && d=0; [ "$u" -lt 0 ] && u=0
+      total_d=$((total_d+d)); total_u=$((total_u+u))
+      printf '%-12s %14s %14s  在线\n' "$label" "$(fmt "$d")" "$(fmt "$u")"
+    else
+      printf '%-12s %14s %14s  离线\n' "$label" '-' '-'
+    fi
+  done
+  printf '%-12s %14s %14s  合计\n' TOTAL "$(fmt "$total_d")" "$(fmt "$total_u")"
+
+  PREV_RX=(); PREV_TX=()
+  for k in "${!CURR_RX[@]}"; do PREV_RX[$k]=${CURR_RX[$k]}; PREV_TX[$k]=${CURR_TX[$k]}; done
+done
